@@ -1,18 +1,18 @@
-const loadphone = async (searchText)=>{
+const loadphone = async (searchText,isShowAll)=>{
     const res=await fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText}`);
     const data=await res.json();
     const phones=data.data;
-    displayPhones(phones);
+    displayPhones(phones,isShowAll);
 }
 
-const displayPhones = phones =>{
+const displayPhones = (phones,isShowAll) =>{
     //step 1:finding the id 
     const phoneContainer=document.getElementById('phone-container');
     //clear phone container cards before adding new cards
     phoneContainer.textContent='';
     //display show all button if there are more than 12 phones
     const showAllContainer=document.getElementById('show-all-container');
-    if(phones.length>12)
+    if(phones.length>12 && !isShowAll )
     {
         showAllContainer.classList.remove('hidden');
     }
@@ -20,8 +20,12 @@ const displayPhones = phones =>{
     {
         showAllContainer.classList.add('hidden');
     }
-    //display only first 12 phones
-    phones=phones.slice(0,12);
+    console.log('isShowAll',isShowAll);
+    //display only first 12 phones if not show All
+    if(!isShowAll)
+    {
+        phones=phones.slice(0,12);
+    }
     // console.log(phones);
     phones.forEach(phone =>{
         console.log(phone);
@@ -46,19 +50,19 @@ const displayPhones = phones =>{
     toggleLoadingSpinner(false);
 }
 //handle search button
-const handleSearch = () =>{
+const handleSearch = (isShowAll) =>{
     toggleLoadingSpinner(true);
     const searchField=document.getElementById('search-field');
     const searchText=searchField.value;
     console.log(searchText);
-    loadphone(searchText);
+    loadphone(searchText,isShowAll);
 }
-const handleSearch2 = () =>{
-    toggleLoadingSpinner(true);
-    const searchField=document.getElementById('search-field2');
-    const searchText=searchField.value;
-    loadphone(searchText);
-}
+// const handleSearch2 = () =>{
+//     toggleLoadingSpinner(true);
+//     const searchField=document.getElementById('search-field2');
+//     const searchText=searchField.value;
+//     loadphone(searchText);
+// }
 const toggleLoadingSpinner = (isLoading)=>{
     const loadingSpineer=document.getElementById('loading-spinner');
     if(isLoading)
@@ -69,5 +73,8 @@ const toggleLoadingSpinner = (isLoading)=>{
     {
         loadingSpineer.classList.add('hidden');
     }
+}
+const handleShowAll = () =>{
+    handleSearch(true);
 }
 // loadphone();
